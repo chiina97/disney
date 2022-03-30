@@ -60,10 +60,6 @@ public class GenreServiceImpl implements IGenreService{
 		return this.genreRepo.findByName(name).get();
 	}
 	
-	  @Transactional(readOnly = true)
-		public Optional<Genre>findAllMoviesByGenreId(Long id){
-		return genreRepo.findAllByMoviesIdAndEnable(id, true);
-	 }
 	
 
 }

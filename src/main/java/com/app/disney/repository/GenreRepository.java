@@ -16,6 +16,6 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
 
 	public Optional<Genre> findByName(String name);
 	
-	public Optional<Genre>findAllByMoviesIdAndEnable(Long id,boolean enable);
+	
 
 }
