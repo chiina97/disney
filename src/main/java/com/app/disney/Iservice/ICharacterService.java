@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.app.disney.dto.CharacterReturnDTO;
+import com.app.disney.dto.CharacterFilterDTO;
 import com.app.disney.models.Characters;
 
 
 
 public interface ICharacterService {
-	public ArrayList<CharacterReturnDTO> listAll();
+	public ArrayList<CharacterFilterDTO> listAll();
 
 	public Characters save(Characters character);
 

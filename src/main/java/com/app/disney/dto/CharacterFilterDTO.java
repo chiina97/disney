@@ -1,13 +1,13 @@
 package com.app.disney.dto;
 
-public class CharacterReturnDTO {
+public class CharacterFilterDTO {
 	
 	private String image;
 	private String name;
 	
-	public CharacterReturnDTO() {
+	public CharacterFilterDTO() {
 	}
-	public CharacterReturnDTO(String image, String name) {
+	public CharacterFilterDTO(String image, String name) {
 		this.image = image;
 		this.name = name;
 	}

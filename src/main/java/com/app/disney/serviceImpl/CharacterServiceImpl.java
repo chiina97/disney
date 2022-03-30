@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.app.disney.Iservice.ICharacterService;
-import com.app.disney.dto.CharacterReturnDTO;
+import com.app.disney.dto.CharacterFilterDTO;
 import com.app.disney.models.Characters;
 import com.app.disney.repository.CharacterRepository;
 
@@ -20,14 +20,14 @@ public class CharacterServiceImpl implements ICharacterService {
 	CharacterRepository characterRepo;
 
 	@Override
-	public ArrayList<CharacterReturnDTO> listAll() {
-		ArrayList<CharacterReturnDTO> listReturn = new ArrayList<CharacterReturnDTO>();
+	public ArrayList<CharacterFilterDTO> listAll() {
+		ArrayList<CharacterFilterDTO> listReturn = new ArrayList<CharacterFilterDTO>();
 		try {
 			List<Characters> list = this.characterRepo.findAll();
 			// creo una lista con elementos de tipo characterReturnDTO-> {image, name};
 			// valor de retorno solicitado
 			for (Characters ch : list) {
-				listReturn.add(new CharacterReturnDTO(ch.getImage(), ch.getName()));
+				listReturn.add(new CharacterFilterDTO(ch.getImage(), ch.getName()));
 			}
 			return listReturn;
 		} catch (Exception e) {

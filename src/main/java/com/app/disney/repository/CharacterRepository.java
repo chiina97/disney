@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+
+import com.app.disney.dto.CharacterFilterDTO;
 import com.app.disney.models.Characters;
 
 public interface CharacterRepository extends JpaRepository<Characters, Long> {

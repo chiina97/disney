@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.app.disney.dto.Message;
 import com.app.disney.dto.MovieDTO;
+import com.app.disney.models.Characters;
 import com.app.disney.models.Genre;
 import com.app.disney.models.Movie;
 import com.app.disney.serviceImpl.GenreServiceImpl;
@@ -37,7 +38,6 @@ public class MovieController {
 
 	@Autowired
 	private ModelMapper modelMapper;
-	
 
 	@PostMapping
 	public ResponseEntity<?> create(@Valid @RequestBody MovieDTO movieDTO, BindingResult result) {
@@ -51,83 +51,99 @@ public class MovieController {
 
 		Movie movieRequest = modelMapper.map(movieDTO, Movie.class);
 		movieRequest.setEnable(true);
-		
+
 		movieService.save(movieRequest);
-		this.movieService.setGenres(movieDTO,movieRequest);
-		
+		this.movieService.setGenres(movieDTO, movieRequest);
+
 		MovieDTO movieResp = modelMapper.map(movieRequest, MovieDTO.class);
 
 		return new ResponseEntity<MovieDTO>(movieResp, HttpStatus.CREATED);
 	}
-	
+
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@Valid@RequestBody MovieDTO movieDTO,BindingResult result,
+	public ResponseEntity<?> update(@Valid @RequestBody MovieDTO movieDTO, BindingResult result,
 			@PathVariable(value = "id") Long movieId) {
-		
+
 		// validaciones:
-				if (result.hasErrors()) {
-					return new ResponseEntity<Message>(new Message(result.getFieldError().getDefaultMessage()),
-									HttpStatus.BAD_REQUEST);
-						}
-				
+		if (result.hasErrors()) {
+			return new ResponseEntity<Message>(new Message(result.getFieldError().getDefaultMessage()),
+					HttpStatus.BAD_REQUEST);
+		}
+
 		// convert DTO to Entity
 		Movie movieRequest = modelMapper.map(movieDTO, Movie.class);
 
 		movieService.update(movieRequest, movieId);
-		
-		//convert entity to dto
+
+		// convert entity to dto
 		MovieDTO movieResponse = modelMapper.map(movieRequest, MovieDTO.class);
 
-		return new ResponseEntity<>(movieResponse,HttpStatus.CREATED);
+		return new ResponseEntity<>(movieResponse, HttpStatus.CREATED);
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> delete(@PathVariable(value = "id") Long movieId) {
 		// convert DTO to Entity
 		Optional<Movie> movie = movieService.findById(movieId);
-		if(movie.isPresent()) {
+		if (movie.isPresent()) {
 			movieService.deleteById(movieId);
-			return new ResponseEntity<Message>(new Message("La Pelicula/Serie "+movie.get().getTitle() +" fue eliminada!"), HttpStatus.OK);
-		}
-		else {
+			return new ResponseEntity<Message>(
+					new Message("La Pelicula/Serie " + movie.get().getTitle() + " fue eliminada!"), HttpStatus.OK);
+		} else {
 			return new ResponseEntity<Message>(new Message("La Pelicula/Serie no existe"), HttpStatus.BAD_REQUEST);
 		}
-		
-		
+
 	}
-	
+
 	@GetMapping("/name/{name}")
 	public ResponseEntity<?> getAllMoviesByName(@PathVariable(value = "name") String name) {
-		return ResponseEntity.ok(movieService.findAllByTitle(name));
+		try {
+			List<Movie> movies = movieService.findAllByTitle(name);
+			if (movies.isEmpty())
+				return new ResponseEntity<Message>(new Message("No se encontraron peliculas con el nombre ingresado"),
+						HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<List<Movie>>(movies, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<Message>(new Message("Se produjo un error"), HttpStatus.BAD_REQUEST);
+		}
 	}
-	
+
 	@GetMapping("/genre/{genre}")
 	public ResponseEntity<?> getAllMoviesById(@PathVariable(value = "genre") Long genreId) {
-	  Optional<Genre>genreRequest=genreService.findById(genreId); 
-	  return ResponseEntity.ok(genreRequest.get().getMovies());
-	}
+		try {
+		Optional<Genre> genreRequest = genreService.findById(genreId);
+		if (genreRequest.isEmpty())
+			return new ResponseEntity<Message>(new Message("No se encontraron peliculas con ese id de genero"),
+					HttpStatus.BAD_REQUEST);
+		return ResponseEntity.ok(genreRequest.get().getMovies());
 	
+		}
+		catch (Exception e) {
+			return new ResponseEntity<Message>(new Message("Se produjo un error"), HttpStatus.BAD_REQUEST);
+		}
+	}
 	@GetMapping("/order/{order}")
 	public ResponseEntity<?> getAllMoviesByOrder(@PathVariable(value = "order") String order) {
+		try {
+			if (order.equals("ASC")) {
+				return ResponseEntity.ok(movieService.findAllOrderByAsc());
+			} else {
+				if (order.equals("DESC")) {
+					return ResponseEntity.ok(movieService.findAllOrderByDesc());
+				}
+			}
+			return new ResponseEntity<Message>(new Message("El orden ingresado es incorrecto"), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			return new ResponseEntity<Message>(new Message("Se produjo un error"), HttpStatus.BAD_REQUEST);
+		}
 		
-		if(order.equals("ASC")) {
-			return ResponseEntity.ok(movieService.findAllOrderByAsc());
-		}
-		else {
-			if(order.equals("DESC")) {
-			   return ResponseEntity.ok(movieService.findAllOrderByDesc());
-			}
-			else {
-				return new ResponseEntity<Message>(new Message("ERROR"), HttpStatus.BAD_REQUEST);
-			}
-		}
+
 	}
-	
+
 	@GetMapping
 	public ResponseEntity<?> getAllMovies() {
-		
+
 		return ResponseEntity.ok(movieService.findAll());
-		}
-		
+	}
 
 }

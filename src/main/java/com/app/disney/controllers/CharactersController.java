@@ -20,10 +20,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.disney.dto.CharacterDTO;
-import com.app.disney.dto.CharacterReturnDTO;
+import com.app.disney.dto.CharacterFilterDTO;
 import com.app.disney.dto.Message;
+import com.app.disney.dto.UserDTO;
 import com.app.disney.models.Characters;
 import com.app.disney.models.Movie;
+import com.app.disney.models.User;
 import com.app.disney.serviceImpl.CharacterServiceImpl;
 import com.app.disney.serviceImpl.MovieServiceImpl;
 
@@ -43,7 +45,7 @@ public class CharactersController {
 	@GetMapping
 	public ResponseEntity<?> getAll() {
 		try {
-			return new ResponseEntity<List<CharacterReturnDTO>>(this.characterService.listAll(), HttpStatus.OK);
+			return new ResponseEntity<List<CharacterFilterDTO>>(this.characterService.listAll(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Ocurrio un error al obtener el listado"),
 					HttpStatus.BAD_REQUEST);
@@ -140,6 +142,19 @@ public class CharactersController {
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Se produjo un error"), HttpStatus.BAD_REQUEST);
 		}
+	}
+	//detalle:
+	@GetMapping("/details/{id}")
+	public ResponseEntity<CharacterDTO> getById(@PathVariable(value = "id") Long characterId) {
+		Optional<Characters> character = characterService.findById(characterId);
+		// convert entity to DTO
+		CharacterDTO characterResponse = modelMapper.map(character.get(), CharacterDTO.class);
+		if (character.isPresent()) {
+			return ResponseEntity.ok(characterResponse);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+
 	}
 	
 	@DeleteMapping("/{id}")

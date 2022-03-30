@@ -81,13 +81,12 @@ public class MovieServiceImpl implements IMovieService {
 
 	@Transactional(readOnly = true)
 	public List<Movie> findAllByTitle(String title) {
-		return movieRepo.findAllByTitleAndEnable(title,true);
+		return movieRepo.findAllByTitleAndEnable(title, true);
 	}
 
 	public Optional<Movie> findByTitle(String title) {
 		return movieRepo.findByTitleAndEnable(title, true);
 	}
-
 
 	public void setGenres(MovieDTO movieRequest, Movie movieReq) {
 		for (Genre genre : movieRequest.getGenres()) {
