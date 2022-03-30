@@ -10,7 +10,7 @@ import com.app.disney.models.Characters;
 
 
 public interface ICharacterService {
-	public ArrayList<CharacterFilterDTO> listAll();
+	public List<Characters> listAll();
 
 	public Characters save(Characters character);
 

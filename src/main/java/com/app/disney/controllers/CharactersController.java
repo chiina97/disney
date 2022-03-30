@@ -1,5 +1,6 @@
 package com.app.disney.controllers;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,15 +44,16 @@ public class CharactersController {
 	private ModelMapper modelMapper;
 
 	@GetMapping
-	public ResponseEntity<?> getAll() {
-		try {
-			return new ResponseEntity<List<CharacterFilterDTO>>(this.characterService.listAll(), HttpStatus.OK);
+	 public ResponseEntity<?> getAll(){
+		 try {
+			List<Characters> listCharacters=  this.characterService.listAll();
+			List<CharacterFilterDTO> listReturn = Arrays.asList(modelMapper.map(listCharacters,CharacterFilterDTO[].class)); 
+			 return new ResponseEntity<List<CharacterFilterDTO>> (listReturn,HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<Message>(new Message("Ocurrio un error al obtener el listado"),
-					HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message> (new Message("Ocurrio un error al obtener el listado"),HttpStatus.BAD_REQUEST);
 		}
-
-	}
+		 
+	 }
 
 	@PostMapping
 	public ResponseEntity<?> save(@Valid @RequestBody CharacterDTO characterDTO, BindingResult result) {
@@ -96,10 +98,11 @@ public class CharactersController {
 	public ResponseEntity<?> getCharactersByAge(@PathVariable("age") int age) {
 		try {
 			List<Characters> request = this.characterService.findAllByAgeAndEnable(age);
+			 List<CharacterFilterDTO> listReturn = Arrays.asList(modelMapper.map(request,CharacterFilterDTO[].class));
 			if (request.isEmpty())
 				return new ResponseEntity<Message>(new Message("No se encontraron personajes con la edad ingresada"),
 						HttpStatus.BAD_REQUEST);
-			return new ResponseEntity<List<Characters>>(request, HttpStatus.OK);
+			return new ResponseEntity<>(listReturn, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Se produjo un error"), HttpStatus.BAD_REQUEST);
 		}
@@ -109,10 +112,11 @@ public class CharactersController {
 	public ResponseEntity<?> getCharactersByName(@PathVariable("name") String name) {
 		try {
 			List<Characters> request = this.characterService.findAllByName(name);
+			List<CharacterFilterDTO> listReturn = Arrays.asList(modelMapper.map(request,CharacterFilterDTO[].class));
 			if (request.isEmpty())
 				return new ResponseEntity<Message>(new Message("No se encontraron personajes con el nombre ingresado"),
 						HttpStatus.BAD_REQUEST);
-			return new ResponseEntity<List<Characters>>(request, HttpStatus.OK);
+			return new ResponseEntity<>(listReturn, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Se produjo un error"), HttpStatus.BAD_REQUEST);
 		}
@@ -122,10 +126,12 @@ public class CharactersController {
 	public ResponseEntity<?> getCharactersByMovie(@PathVariable("id") Long id) {
 		try {
 			List<Characters> request = this.characterService.findAllByIdMovie(id);
+			List<CharacterFilterDTO> listReturn = Arrays.asList(modelMapper.map(request,CharacterFilterDTO[].class));
+			
 			if (request.isEmpty())
 				return new ResponseEntity<Message>(
 						new Message("No se encontraron personajes para la pelicula ingresada"), HttpStatus.BAD_REQUEST);
-			return new ResponseEntity<List<Characters>>(request, HttpStatus.OK);
+			return new ResponseEntity<>(listReturn, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Se produjo un error"), HttpStatus.BAD_REQUEST);
 		}
@@ -135,10 +141,11 @@ public class CharactersController {
 	public ResponseEntity<?> getCharactersByWeight(@PathVariable("weight") double weight) {
 		try {
 			List<Characters> request = this.characterService.findAllByWeight(weight);
+			List<CharacterFilterDTO> listReturn = Arrays.asList(modelMapper.map(request,CharacterFilterDTO[].class));
 			if (request.isEmpty())
 				return new ResponseEntity<Message>(new Message("No se encontraron personajes con el peso ingresado"),
 						HttpStatus.BAD_REQUEST);
-			return new ResponseEntity<List<Characters>>(request, HttpStatus.OK);
+			return new ResponseEntity<>(listReturn, HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Se produjo un error"), HttpStatus.BAD_REQUEST);
 		}

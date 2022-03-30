@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.app.disney.Iservice.IMovieService;
 import com.app.disney.dto.MovieDTO;
+import com.app.disney.models.Characters;
 import com.app.disney.models.Genre;
 import com.app.disney.models.Movie;
 import com.app.disney.repository.GenreRepository;
@@ -26,9 +27,10 @@ public class MovieServiceImpl implements IMovieService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Iterable<Movie> findAll() {
+	public List<Movie> listAll() {
+		return  this.movieRepo.findAll();
+		
 
-		return movieRepo.findAll();
 	}
 
 	@Override
@@ -70,12 +72,12 @@ public class MovieServiceImpl implements IMovieService {
 	}
 
 	@Transactional(readOnly = true)
-	public Iterable<Movie> findAllOrderByAsc() {
+	public List<Movie> findAllOrderByAsc() {
 		return movieRepo.findAllOrderByAsc();
 	}
 
 	@Transactional(readOnly = true)
-	public Iterable<Movie> findAllOrderByDesc() {
+	public List<Movie> findAllOrderByDesc() {
 		return movieRepo.findAllOrderByDesc();
 	}
 

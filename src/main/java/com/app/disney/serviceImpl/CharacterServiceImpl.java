@@ -20,20 +20,9 @@ public class CharacterServiceImpl implements ICharacterService {
 	CharacterRepository characterRepo;
 
 	@Override
-	public ArrayList<CharacterFilterDTO> listAll() {
-		ArrayList<CharacterFilterDTO> listReturn = new ArrayList<CharacterFilterDTO>();
-		try {
-			List<Characters> list = this.characterRepo.findAll();
-			// creo una lista con elementos de tipo characterReturnDTO-> {image, name};
-			// valor de retorno solicitado
-			for (Characters ch : list) {
-				listReturn.add(new CharacterFilterDTO(ch.getImage(), ch.getName()));
-			}
-			return listReturn;
-		} catch (Exception e) {
-			// retorno la lista vacia.
-			return listReturn;
-		}
+	public List<Characters> listAll() {
+		return  this.characterRepo.findAll();
+		
 
 	}
 	
