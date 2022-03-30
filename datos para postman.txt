@@ -1,0 +1,33 @@
+url --> http://localhost:8080/auth/login
+login :
+ {
+    "username": "user2",
+    "password": "1234"
+}
+charater:registro: 
+url --> http://localhost:8080/auth/register
+{
+    "name": "Superman",
+    "age": 30,
+    "weight": 90,
+    "history": "Historia de superman...",
+    "image": "url:image:superman"
+}
+character:update:
+url --> http://localhost:8080/characters/update
+{
+    "id": 2,
+    "name": "ironmanUpdated2",
+    "age": 35,
+    "weight": 80,
+    "history": "Historia de ironman updated2...",
+    "image": "url:image:ironmanUpdate2"
+}
+inciso6:
+busqueda con filtros: 
+name:
+http://localhost:8080/characters/name/{name}
+age:
+http://localhost:8080/characters/age/{age}
+id movie:
+http://localhost:8080/characters/movies/{idMovie}
