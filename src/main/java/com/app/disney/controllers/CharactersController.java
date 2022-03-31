@@ -23,11 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.app.disney.dto.CharacterDTO;
 import com.app.disney.dto.CharacterFilterDTO;
 import com.app.disney.dto.Message;
+import com.app.disney.dto.MovieDTO;
 import com.app.disney.dto.UserDTO;
 import com.app.disney.models.Characters;
+import com.app.disney.models.Genre;
 import com.app.disney.models.Movie;
 import com.app.disney.models.User;
 import com.app.disney.serviceImpl.CharacterServiceImpl;
+import com.app.disney.serviceImpl.GenreServiceImpl;
 import com.app.disney.serviceImpl.MovieServiceImpl;
 
 
@@ -39,6 +42,8 @@ public class CharactersController {
 	CharacterServiceImpl characterService;
 	@Autowired
 	MovieServiceImpl movieService;
+	@Autowired
+	GenreServiceImpl genreService;
 
 	@Autowired
 	private ModelMapper modelMapper;
@@ -80,19 +85,29 @@ public class CharactersController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> update(@Valid @RequestBody CharacterDTO characterDTO, BindingResult result,
-			@PathVariable(value = "id") Long characterId) {
+	public ResponseEntity<?> update(@Valid @RequestBody MovieDTO movieDTO, BindingResult result,
+			@PathVariable(value = "id") Long movieId) {
 		try {
-			Characters characterRequest = modelMapper.map(characterDTO, Characters.class);
-			characterService.update(characterRequest, characterId);
-			CharacterDTO characterResponse = modelMapper.map(characterRequest, CharacterDTO.class);
-			return new ResponseEntity<>(characterResponse, HttpStatus.CREATED);
-
+			
+			// validaciones:
+			if (result.hasErrors()) {
+				return new ResponseEntity<Message>(new Message(result.getFieldError().getDefaultMessage()),
+						HttpStatus.BAD_REQUEST);
+			}
+			// convert DTO to Entity
+			Movie movieRequest = modelMapper.map(movieDTO, Movie.class);
+			movieService.update(movieRequest, movieId);
+			List<Characters> listCharacters = this.characterService.findAllByMovieId(movieId);
+			List<Genre> listGenre = this.genreService.findAllByMoviesIdAndEnable(movieId);
+			// convert entity to dto
+			MovieDTO movieResponse = modelMapper.map(movieRequest, MovieDTO.class);
+			movieResponse.setCharacters(listCharacters);
+			movieResponse.setGenres(listGenre);
+			return new ResponseEntity<>(movieResponse, HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new ResponseEntity<Message>(new Message("Se produjo un error al actualizar"),
-					HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Se produjo un error"), HttpStatus.BAD_REQUEST);
 		}
-	}
+		}
 
 	@GetMapping("/age/{age}")
 	public ResponseEntity<?> getCharactersByAge(@PathVariable("age") int age) {
@@ -125,7 +140,7 @@ public class CharactersController {
 	@GetMapping("/movie/{id}")
 	public ResponseEntity<?> getCharactersByMovie(@PathVariable("id") Long id) {
 		try {
-			List<Characters> request = this.characterService.findAllByIdMovie(id);
+			List<Characters> request = this.characterService.findAllByMovieId(id);
 			List<CharacterFilterDTO> listReturn = Arrays.asList(modelMapper.map(request,CharacterFilterDTO[].class));
 			
 			if (request.isEmpty())

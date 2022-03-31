@@ -55,7 +55,7 @@ public class CharacterServiceImpl implements ICharacterService {
 		return this.characterRepo.findAllByNameAndEnable(name, true);
 	}
 
-	public List<Characters> findAllByIdMovie(Long id) {
+	public List<Characters> findAllByMovieId(Long id) {
 		return this.characterRepo.findAllByMoviesIdAndEnable(id, true);
 	}
 

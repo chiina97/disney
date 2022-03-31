@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.app.disney.models.Characters;
 import com.app.disney.models.Genre;
 import com.app.disney.models.Movie;
 
@@ -16,6 +17,7 @@ public interface GenreRepository extends JpaRepository<Genre, Long> {
 
 	public Optional<Genre> findByName(String name);
 	
+	List<Genre>findAllByMoviesIdAndEnable(Long id,boolean enable);
 	
 
 }

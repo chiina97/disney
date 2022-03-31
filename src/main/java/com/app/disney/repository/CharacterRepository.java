@@ -18,4 +18,6 @@ public interface CharacterRepository extends JpaRepository<Characters, Long> {
 	
 	List<Characters> findAllByWeightAndEnable(double weight,boolean enable);
 	
+	Optional<Characters>findByNameAndEnable(String name, boolean enable);
+	
 }

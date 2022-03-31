@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.app.disney.Iservice.IGenreService;
+import com.app.disney.models.Characters;
 import com.app.disney.models.Genre;
 import com.app.disney.models.Movie;
 import com.app.disney.repository.GenreRepository;
@@ -60,6 +61,8 @@ public class GenreServiceImpl implements IGenreService{
 		return this.genreRepo.findByName(name).get();
 	}
 	
-	
+	public List<Genre>findAllByMoviesIdAndEnable(Long id){
+		return this.genreRepo.findAllByMoviesIdAndEnable(id, true);
+	}
 
 }

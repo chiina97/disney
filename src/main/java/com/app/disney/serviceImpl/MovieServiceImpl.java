@@ -14,6 +14,7 @@ import com.app.disney.dto.MovieDTO;
 import com.app.disney.models.Characters;
 import com.app.disney.models.Genre;
 import com.app.disney.models.Movie;
+import com.app.disney.repository.CharacterRepository;
 import com.app.disney.repository.GenreRepository;
 import com.app.disney.repository.MovieRepository;
 
@@ -24,6 +25,8 @@ public class MovieServiceImpl implements IMovieService {
 	private MovieRepository movieRepo;
 	@Autowired
 	private GenreRepository genreRepo;
+	@Autowired
+	private CharacterRepository characterRepo;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -101,6 +104,23 @@ public class MovieServiceImpl implements IMovieService {
 				newGenre.getMovies().add(movieReq);
 				this.genreRepo.save(newGenre);
 			}
+		}
+	}
+	
+	public void saveCharacters(MovieDTO moviedto) {
+		Optional<Movie> newMovie = this.movieRepo.findByTitleAndEnable(moviedto.getTitle(), true);
+		if(!moviedto.getCharacters().isEmpty()) {
+			for(Characters c: moviedto.getCharacters()) {
+				Optional<Characters> characterQuery = this.characterRepo.findByNameAndEnable(c.getName(),true);
+				if(characterQuery.isEmpty()) {
+					c.setEnable(true);
+					this.characterRepo.save(c);
+				}else {
+					characterQuery.get().getMovies().add(newMovie.get());
+					this.movieRepo.save(newMovie.get());
+				}
+			}
+			
 		}
 	}
 

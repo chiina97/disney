@@ -18,6 +18,7 @@ public class MovieDTO {
 	private boolean enable;
 	private String genre;
 	private List<Genre>genres;
+	private List<Characters>characters;
 	
 	
 	public Long getId() {
@@ -68,6 +69,12 @@ public class MovieDTO {
 	}
 	public void setGenres(List<Genre> genres) {
 		this.genres = genres;
+	}
+	public List<Characters> getCharacters() {
+		return characters;
+	}
+	public void setCharacters(List<Characters> characters) {
+		this.characters = characters;
 	}
 	
 	
