@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.persistence.ManyToMany;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 import com.app.disney.models.Characters;
 import com.app.disney.models.Genre;
@@ -14,6 +16,8 @@ public class MovieDTO {
 	private String image;
 	private String title;
 	private String creationDate;
+	@Min(value=1,message="el puntaje como minimo debe ser de 1 punto")
+	@Max(value=5,message="el puntaje como maximo debe ser de 5 puntos")
 	private int score;
 	private boolean enable;
 	private String genre;
